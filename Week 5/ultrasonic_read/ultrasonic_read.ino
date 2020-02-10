@@ -9,15 +9,18 @@ void setup() {
   // put your setup code here, to run once:
     pinMode(echo, INPUT);
     pinMode(trigger, OUTPUT);
-    Wire.begin();
+    Wire.begin(0x01);
     Serial.begin(9600);    
+    Wire.onRequest(requestEvent);
 }
 
 NewPing sonar(trigger, echo, maxdist);
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int result = sonar.ping_cm();
-  Serial.println(sonar.ping_cm());
   delay(100);
+}
+
+void requestEvent() {
+  int result = sonar.ping_cm();
+  Wire.write(result);
 }
