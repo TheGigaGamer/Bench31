@@ -11,7 +11,7 @@ void setup() {
     pinMode(trigger, OUTPUT);
     Wire.begin(0x01);
     Serial.begin(9600);    
-    Wire.onRequest(requestEvent);
+    Wire.onReceive(receiveEvent);
 }
 
 NewPing sonar(trigger, echo, maxdist);
@@ -20,7 +20,10 @@ void loop() {
   delay(100);
 }
 
-void requestEvent() {
+void receiveEvent() {
+  while (Wire.available()) {
+    Wire.read();
+  }
   int result = sonar.ping_cm();
   Wire.write(result);
 }
