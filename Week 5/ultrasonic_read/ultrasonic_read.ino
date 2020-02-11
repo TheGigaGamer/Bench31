@@ -5,6 +5,8 @@
 #define trigger 3
 #define maxdist 50
 
+int result;
+
 void setup() {
   // put your setup code here, to run once:
     pinMode(echo, INPUT);
@@ -17,6 +19,7 @@ void setup() {
 NewPing sonar(trigger, echo, maxdist);
 
 void loop() {
+  result = sonar.ping_cm();
   delay(100);
 }
 
@@ -24,6 +27,5 @@ void receiveEvent() {
   while (Wire.available()) {
     Wire.read();
   }
-  int result = sonar.ping_cm();
   Wire.write(result);
 }
