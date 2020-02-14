@@ -17,7 +17,7 @@ i*/
 Vehicle car;
 int Lencoder,Rencoder;
 
-int Lnum, Rnum, State;
+uint8_t Lnum, Rnum, State,Reset;
 
 
 void setup() {
@@ -31,26 +31,43 @@ void setup() {
 
 void requestEvent()
 {
+  Lencoder = .01* car.readEncoder(LEFT);
+  Rencoder = .01 * car.readEncoder(RIGHT); 
   Wire.write(Lencoder);
   Wire.write(Rencoder);
 }
 
 void loop(){
-  Lencoder = car.readEncoder(LEFT);
-  Rencoder = car.readEncoder(RIGHT); 
+  Lencoder = .01 *  car.readEncoder(LEFT);
+  Rencoder = .01 * car.readEncoder(RIGHT); 
   
  } //will show  a period when not in the receive event to show time 
 
 void receiveEvent()
 {
-  State = Wire.read(); 
-  Lnum = Wire.read(); //Take in the three numbers
+  State = Wire.read();
+  Lnum = Wire.read(); //Take in the three number
   Rnum = Wire.read();
+  Reset = Wire.read();
   Serial.print(State);
   Serial.print("\t");
   Serial.print(Lnum); //print them bois out
   Serial.print("\t");
   Serial.println(Rnum);
+  Serial.print("\t");
+  Serial.println(Reset);
+  Serial.print("\n");
+  Serial.print(Lencoder); //print them bois out
+  Serial.print("\t");
+  Serial.println(Rencoder);
+  if (State > 50)
+    State = 50;
+  if (Rnum > 50)
+    Rnum = 50;
+  if (Lnum > 50)
+    Lnum = 50;
+  if (Reset != 0)
+    car.resetEncoder('n');
   driver(); //switch over to the drive function
 }
 
