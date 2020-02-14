@@ -41,7 +41,7 @@ uint8_t result;
 
 void loop() {
   // put your main code here, to run repeatedly:
-  result = sonar.ping_cm();
+  result = findMedianReading();
   m.clear();
   Serial.println(result);
   if (result == 0) {
@@ -57,4 +57,29 @@ void loop() {
 void requestEvent() {
   Serial.println(result);
   Wire.write(result);
+}
+
+int findMedianReading() {
+  int arrayOfValues[3];
+  for (int i = 0; i < 3; i++) {
+    arrayOfValues[i] = sonar.ping_cm();
+  }
+  int flag = 1;
+  int bufferVal;
+  while (flag == 1) {
+    flag = 0;
+    if arrayOfValues[0] > arrayOfValues[1] {
+      flag = 1;
+      bufferVal = arrayOfValues[1];
+      arrayOfValues[1] = arrayOfValues[0];
+      arrayOfValues[0] = bufferVal;
+    }
+    if arrayOfValues[1] > arrayOfValues[2] {
+      flag = 1;
+      bufferVal = arrayOfValues[2];
+      arrayOfValues[2] = arrayOfValues[1];
+      arrayOfValues[1] = bufferVal;
+    }
+  }
+  return arrayOfValues[1];
 }
